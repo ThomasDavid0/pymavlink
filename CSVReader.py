@@ -204,4 +204,5 @@ class CSVReader(object):
         self.messages[self.message_type] = m
 
 if __name__ == "__main__":
+    from pymavlink.logger import logger
     logger.info("FIXME")

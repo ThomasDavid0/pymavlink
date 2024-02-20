@@ -9,9 +9,8 @@ from builtins import range
 from builtins import object
 
 import time, copy
-import logging
 import re
-from .logger import logger
+from pymavlink.logger import logger
 from . import mavutil
 try:
     from google.protobuf import text_format
@@ -197,7 +196,7 @@ class MissionItemProtocol(object):
                 explicit_seq = True
             else:
                 if explicit_seq and not warned_seq:
-                    logging.warn(
+                    logger.warn(
                             'Waypoint file %s: mixes explicit and implicit '
                             'sequence numbers' % (file,))
                     warned_seq = True

@@ -6,7 +6,7 @@ from __future__ import print_function
 
 import fnmatch, math, time, struct
 from pymavlink import mavutil
-from .logger import logger
+from pymavlink.logger import logger
 
 class MAVParmDict(dict):
     def __init__(self, *args):

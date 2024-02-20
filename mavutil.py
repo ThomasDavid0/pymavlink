@@ -15,7 +15,7 @@ import json
 import re
 import platform
 from pymavlink import mavexpression
-from .logger import logger
+from pymavlink.logger import logger
 # We want to re-export x25crc here
 from pymavlink.generator.mavcrc import x25crc as x25crc
 
