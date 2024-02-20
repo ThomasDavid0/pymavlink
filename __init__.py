@@ -4,3 +4,4 @@ import logging
 
 logger = logging.getLogger('pymavlink')
 logger.disabled = True
+

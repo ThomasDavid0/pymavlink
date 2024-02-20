@@ -9,7 +9,8 @@ from __future__ import print_function
 from __future__ import absolute_import
 from builtins import object
 from builtins import sum as builtin_sum
-from pymavlink.logger import logger
+import logging
+logger = logging.getLogger('pymavlink')
 from math import *
 
 try:
