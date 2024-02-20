@@ -166,7 +166,7 @@ class CSVReader(object):
         return self._parse_next()
 
     def recv_match(self, condition=None, type=None, blocking=False):
-#        print("recv_match called (condition=%s type=%s blocking=%s" % (str(condition), str(type), str(blocking)))
+#        logger.info("recv_match called (condition=%s type=%s blocking=%s" % (str(condition), str(type), str(blocking)))
         '''recv the next message that matches the given condition
         type can be a string or a list of strings'''
         if type is not None and not isinstance(type, list) and not isinstance(type, set):
@@ -204,4 +204,4 @@ class CSVReader(object):
         self.messages[self.message_type] = m
 
 if __name__ == "__main__":
-    print("FIXME")
+    logger.info("FIXME")

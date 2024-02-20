@@ -107,7 +107,7 @@ class DFFormat(object):
                 else:
                     msg_types.append(type)
             except KeyError as e:
-                print("DFFormat: Unsupported format char: '%s' in message %s" %
+                logger.info("DFFormat: Unsupported format char: '%s' in message %s" %
                       (c, name))
                 raise Exception("Unsupported format char: '%s' in message %s" %
                                 (c, name))
@@ -684,7 +684,7 @@ class DFReader(object):
                 have_good_clock = True
                 break
 
-#        print("clock is " + str(self.clock))
+#        logger.info("clock is " + str(self.clock))
         if not have_good_clock:
             # we failed to find any GPS messages to set a time
             # base for usec and msec clocks.  Also, not a
@@ -903,7 +903,7 @@ class DFReader_binary(DFReader):
                 # but it needs to be at least 249 bytes which is the block based logging page size (256) less a 6 byte header and
                 # one byte of data. Block based logs are sized in pages which means they can have up to 249 bytes of trailing space.
                 if self.data_len - ofs >= 528 or self.data_len < 528:
-                    print("bad header 0x%02x 0x%02x at %d" % (u_ord(hdr[0]), u_ord(hdr[1]), ofs), file=sys.stderr)
+                    logger.info("bad header 0x%02x 0x%02x at %d" % (u_ord(hdr[0]), u_ord(hdr[1]), ofs), file=sys.stderr)
                 ofs += 1
                 continue
             mtype = u_ord(hdr[2])
@@ -912,7 +912,7 @@ class DFReader_binary(DFReader):
             if lengths[mtype] == -1:
                 if not mtype in self.formats:
                     if self.data_len - ofs >= 528 or self.data_len < 528:
-                        print("unknown msg type 0x%02x (%u) at %d" % (mtype, mtype, ofs),
+                        logger.info("unknown msg type 0x%02x (%u) at %d" % (mtype, mtype, ofs),
                               file=sys.stderr)
                     break
                 self.offset = ofs
@@ -1078,7 +1078,7 @@ class DFReader_binary(DFReader):
                     if self.remaining >= 528:
                         # APM logs often contain garbage at end
                         skip_bytes = self.offset - skip_start
-                        print("Skipped %u bad bytes in log at offset %u, type=%s (prev=%s)" %
+                        logger.info("Skipped %u bad bytes in log at offset %u, type=%s (prev=%s)" %
                               (skip_bytes, skip_start, skip_type, self.prev_type),
                           file=sys.stderr)
                     skip_type = None
@@ -1105,7 +1105,7 @@ class DFReader_binary(DFReader):
         if self.remaining < fmt.len-3:
             # out of data - can often happen half way through a message
             if self.verbose:
-                print("out of data", file=sys.stderr)
+                logger.info("out of data", file=sys.stderr)
             return None
         body = self.data_map[self.offset:self.offset+fmt.len-3]
         elements = None
@@ -1114,14 +1114,14 @@ class DFReader_binary(DFReader):
                 self.unpackers[msg_type] = struct.Struct(fmt.msg_struct).unpack
             elements = list(self.unpackers[msg_type](body))
         except Exception as ex:
-            print(ex)
+            logger.info(ex)
             if self.remaining < 528:
                 # we can have garbage at the end of an APM2 log
                 return None
             # we should also cope with other corruption; logs
             # transferred via DataFlash_MAVLink may have blocks of 0s
             # in them, for example
-            print("Failed to parse %s/%s with len %u (remaining %u)" %
+            logger.info("Failed to parse %s/%s with len %u (remaining %u)" %
                   (fmt.name, fmt.msg_struct, len(body), self.remaining),
                   file=sys.stderr)
         if elements is None:
@@ -1132,7 +1132,7 @@ class DFReader_binary(DFReader):
             try:
                 elements[a_index] = array.array('h', elements[a_index])
             except Exception as e:
-                print("Failed to transform array: %s" % str(e),
+                logger.info("Failed to transform array: %s" % str(e),
                       file=sys.stderr)
 
         if name == 'FMT':
@@ -1166,7 +1166,7 @@ class DFReader_binary(DFReader):
         try:
             self._add_msg(m)
         except Exception as ex:
-            print("bad msg at offset %u" % self.offset, ex)
+            logger.info("bad msg at offset %u" % self.offset, ex)
             pass
         self.percent = 100.0 * (self.offset / float(self.data_len))
 
@@ -1459,6 +1459,6 @@ if __name__ == "__main__":
         if m is None:
             break
         #bout.write(m.get_msgbuf())
-        #print(m)
+        #logger.info(m)
     if use_profiler:
         profiler.print_stats()

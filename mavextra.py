@@ -9,7 +9,7 @@ from __future__ import print_function
 from __future__ import absolute_import
 from builtins import object
 from builtins import sum as builtin_sum
-
+from .logger import logger
 from math import *
 
 try:
@@ -573,7 +573,7 @@ def distance_two(MSG1, MSG2, horizontal=True):
     try:
         return _distance_two(MSG1, MSG2)
     except Exception as ex:
-        print(ex)
+        logger.info(ex)
         return None
 
 first_fix = None
@@ -620,7 +620,7 @@ def airspeed(VFR_HUD, ratio=None, used_ratio=None, offset=None):
         if 'ARSPD_RATIO' in mav.params:
             used_ratio = mav.params['ARSPD_RATIO']
         else:
-            print("no ARSPD_RATIO in mav.params")
+            logger.info("no ARSPD_RATIO in mav.params")
             used_ratio = ratio
     if hasattr(VFR_HUD,'airspeed'):
         airspeed = VFR_HUD.airspeed
@@ -924,7 +924,7 @@ class DCM_State(object):
             delta_angle = old_div((gyro+self.omega_I), self.rate)
             self.dcm.rotate(delta_angle)
             correction = self.last_delta_angle % delta_angle
-            #print (delta_angle - self.last_delta_angle) * 58.0
+            #logger.info (delta_angle - self.last_delta_angle) * 58.0
             corrected_delta = delta_angle + 0.0833333 * correction
             self.dcm2.rotate(corrected_delta)
             self.last_delta_angle = delta_angle
