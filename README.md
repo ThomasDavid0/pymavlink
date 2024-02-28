@@ -82,6 +82,7 @@ From the pymavlink directory, you can use :
 
 ```bash
 MDEF=PATH_TO_message_definitions python -m pip install . -v
+MDEF=../message_definitions python -m pip install . -v
 ```
 
 Since pip installation is executed from /tmp, it is necessary to point to the directory containing message definitions with MDEF. MDEF should not be set to any particular message version directory but the parent folder instead. If you have cloned from mavlink/mavlink then this is ```/mavlink/message_definitions``` . Using pip should auto install dependencies and allow you to keep them up-to-date. 
