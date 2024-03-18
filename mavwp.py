@@ -10,7 +10,8 @@ from builtins import object
 
 import time, copy
 import re
-from pymavlink.logger import logger
+import logging
+logger = logging.getLogger('pymavlink')
 from . import mavutil
 try:
     from google.protobuf import text_format
