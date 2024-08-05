@@ -424,9 +424,9 @@ class mavfile(object):
                 self.flightmode = mode_string_v10(msg)
                 self.mav_type = msg.type
                 self.base_mode = msg.base_mode
-                self.sysid_state[self.sysid].armed = (msg.base_mode & mavlink.MAV_MODE_FLAG_SAFETY_ARMED)
-                self.sysid_state[self.sysid].mav_type = msg.type
-                self.sysid_state[self.sysid].mav_autopilot = msg.autopilot
+                self.sysid_state[src_system].armed = (msg.base_mode & mavlink.MAV_MODE_FLAG_SAFETY_ARMED)
+                self.sysid_state[src_system].mav_type = msg.type
+                self.sysid_state[src_system].mav_autopilot = msg.autopilot
         elif type == 'HIGH_LATENCY2':
             if self.sysid == 0:
                 # lock onto id tuple of first vehicle heartbeat
@@ -435,9 +435,9 @@ class mavfile(object):
             self.mav_type = msg.type
             if msg.autopilot == mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA:
                 self.base_mode = msg.custom0
-                self.sysid_state[self.sysid].armed = (msg.custom0 & mavlink.MAV_MODE_FLAG_SAFETY_ARMED)
-            self.sysid_state[self.sysid].mav_type = msg.type
-            self.sysid_state[self.sysid].mav_autopilot = msg.autopilot
+                self.sysid_state[src_system].armed = (msg.custom0 & mavlink.MAV_MODE_FLAG_SAFETY_ARMED)
+            self.sysid_state[src_system].mav_type = msg.type
+            self.sysid_state[src_system].mav_autopilot = msg.autopilot
 
         elif type == 'PARAM_VALUE':
             if not src_tuple in self.param_state:
@@ -1054,8 +1054,7 @@ class mavudp(mavfile):
     def __init__(self, device, input=True, broadcast=False, source_system=255, source_component=0, use_native=default_native, timeout=0):
         a = device.split(':')
         if len(a) != 2:
-            logger.info("UDP ports must be specified as host:port")
-            sys.exit(1)
+            raise ValueError("UDP ports must be specified as host:port")
         self.port = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.udp_server = input
         self.broadcast = False
@@ -1226,8 +1225,7 @@ class mavtcp(mavfile):
                  use_native=default_native):
         a = device.split(':')
         if len(a) != 2:
-            logger.info("TCP ports must be specified as host:port")
-            sys.exit(1)
+            raise ValueError("TCP ports must be specified as host:port")
         self.destination_addr = (a[0], int(a[1]))
 
         self.autoreconnect = autoreconnect
@@ -1322,8 +1320,7 @@ class mavtcpin(mavfile):
     def __init__(self, device, source_system=255, source_component=0, retries=3, use_native=default_native):
         a = device.split(':')
         if len(a) != 2:
-            logger.info("TCP ports must be specified as host:port")
-            sys.exit(1)
+            raise ValueError("TCP ports must be specified as host:port")
         self.listen = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.listen_addr = (a[0], int(a[1]))
         self.listen.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
